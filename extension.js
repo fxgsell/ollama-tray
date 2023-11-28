@@ -41,14 +41,15 @@ Low:
 */
 
 export default class IndicatorExtension extends Extension {
+    refresh_models() {
+
+    }
+
     enable() {
         this._settings = this.getSettings('org.gnome.shell.extensions.ollama-tray');
-        this._indicator = new PanelMenu.Button(0.0, this.metadata.name, false);
 
-        Main.panel.addToStatusArea(this.uuid, this._indicator);
-
-        this._indicator.menu.addAction(_('Preferences'),
-        () => this.openPreferences());
+        // this._indicator.menu.addAction(_('Preferences'),
+        // () => this.openPreferences());
 
         // Create a new GSettings object, and bind the "show-indicator"
         // setting to the "visible" property.
@@ -60,11 +61,6 @@ export default class IndicatorExtension extends Extension {
         //    console.debug(`${key} = ${settings.get_value(key).print(true)}`);
         //});
 
-        let icon = new St.Icon({
-            icon_name: 'face-smile-symbolic',
-            style_class: 'system-status-icon',
-        });
-        this._indicator.add_child(icon);
 
         // let item = new PopupMenu.PopupMenuItem(_('Show Notification'));
         // item.connect('activate', () => {
@@ -83,6 +79,16 @@ export default class IndicatorExtension extends Extension {
             let raw_data = res.get_data()
             let models = JSON.parse(imports.byteArray.toString(raw_data))['models'];
 
+
+            this._active_indicator = new PanelMenu.Button(0.0, this.metadata.name, false);
+
+            Main.panel.addToStatusArea(this.uuid, this._active_indicator);
+            let icon = new St.Icon({
+                icon_name: 'face-smile-symbolic',
+                style_class: 'system-status-icon',
+            });
+            this._active_indicator.add_child(icon);
+            
             for (let i in models) {
                 let m = models[i];
                 log("Found model: " + m.name);
@@ -102,10 +108,12 @@ export default class IndicatorExtension extends Extension {
                     }
 
                 });
-                this._indicator.menu.addMenuItem(item);
+                this._active_indicator.menu.addMenuItem(item);
             }
         } catch(err) {
-            this._indicator.add_child(new St.Icon({
+            this._destroy_active_indicator();
+            this._inactive_indicator = new PanelMenu.Button(0.0, this.metadata.name, false);
+            this._inactive_indicator.add_child(new St.Icon({
                 icon_name: 'dialog-warning',
                 style_class: 'system-status-icon',
             }));
@@ -124,14 +132,30 @@ export default class IndicatorExtension extends Extension {
                     logError(e);
                 }
             });
-            this._indicator.menu.addMenuItem(item);
+            this._inactive_indicator.menu.addMenuItem(item);
+            Main.panel.addToStatusArea(this.uuid, this._inactive_indicator);
+    
         }
 
     }
 
+    _destroy_inactive_indicator() {
+        if (this._inactive_indicator) {
+            this._inactive_indicator.destroy();
+            this._inactive_indicator = null;
+        }
+    }
+    _destroy_active_indicator() {
+        if (this._active_indicator) {
+            this._active_indicator.destroy();
+            this._active_indicator = null;
+        }
+    }
+
     disable() {
-        this._indicator.destroy();
-        this._indicator = null;
+        this._destroy_inactive_indicator();
+        this._destroy_active_indicator();
+
         this._settings = null;
     }
 }

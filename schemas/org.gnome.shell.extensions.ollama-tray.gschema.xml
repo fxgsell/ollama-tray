@@ -5,7 +5,7 @@
       <default>"localhost:11434"</default>
     </key>
     <key name="command" type="s">
-      <default>"gnome-terminal -- toolbox run --container cargoai ollama"</default>
+      <default>"ollama"</default>
     </key>
   </schema>
 </schemalist>
