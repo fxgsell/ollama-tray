@@ -1,0 +1,10 @@
+{
+  "name": "Ollama Indicator",
+  "description": "An indicator that let you run models with Ollama.",
+  "uuid": "ollama-tray@fxgsell.github.com",
+  "shell-version": [
+    "45"
+  ],
+  "url": "https://github.com/fxgsell/ollama-tray",
+  "settings-schema": "org.gnome.shell.extensions.ollama-tray"
+}

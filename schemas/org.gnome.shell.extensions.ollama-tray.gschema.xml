@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.ollama-tray" path="/org/gnome/shell/extensions/ollama-tray/">
+    <key name="url" type="s">
+      <default>"localhost:11434"</default>
+    </key>
+    <key name="command" type="s">
+      <default>"gnome-terminal -- toolbox run --container cargoai ollama"</default>
+    </key>
+  </schema>
+</schemalist>
