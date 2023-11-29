@@ -69,10 +69,19 @@ export default class IndicatorExtension extends Extension {
         // this.menu.addMenuItem(item);
 
         const list_models_url = `http://${  this._settings.get_string('url') }/api/tags`
-
+       
         let httpSession = new Soup.Session();
         let message = Soup.Message.new('GET', list_models_url);
         let res;
+
+        this._active_indicator = new PanelMenu.Button(0.0, this.metadata.name, false);
+
+        Main.panel.addToStatusArea(this.uuid, this._active_indicator);
+        let icon = new St.Icon({ 
+            style_class: 'ollama-tray-llama-idle', 
+        });
+        this._active_indicator.add_child(icon);
+        
         try {
             res = httpSession.send_and_read(message, null);
 
@@ -80,14 +89,6 @@ export default class IndicatorExtension extends Extension {
             let models = JSON.parse(imports.byteArray.toString(raw_data))['models'];
 
 
-            this._active_indicator = new PanelMenu.Button(0.0, this.metadata.name, false);
-
-            Main.panel.addToStatusArea(this.uuid, this._active_indicator);
-            let icon = new St.Icon({
-                icon_name: 'face-smile-symbolic',
-                style_class: 'system-status-icon',
-            });
-            this._active_indicator.add_child(icon);
             
             for (let i in models) {
                 let m = models[i];
@@ -108,16 +109,11 @@ export default class IndicatorExtension extends Extension {
                     }
 
                 });
+
                 this._active_indicator.menu.addMenuItem(item);
             }
         } catch(err) {
-            this._destroy_active_indicator();
-            this._inactive_indicator = new PanelMenu.Button(0.0, this.metadata.name, false);
-            this._inactive_indicator.add_child(new St.Icon({
-                icon_name: 'dialog-warning',
-                style_class: 'system-status-icon',
-            }));
-            log("************************** OLLAMA NOT RUNNING: " + res);
+            log("Ollama serve is not accessible: " + res);
 
             let item = new PopupMenu.PopupMenuItem(_("Start Ollama serve"));
             item.connect('activate', () => {
@@ -132,8 +128,7 @@ export default class IndicatorExtension extends Extension {
                     logError(e);
                 }
             });
-            this._inactive_indicator.menu.addMenuItem(item);
-            Main.panel.addToStatusArea(this.uuid, this._inactive_indicator);
+            this._active_indicator.menu.addMenuItem(item);
     
         }
 
@@ -153,7 +148,7 @@ export default class IndicatorExtension extends Extension {
     }
 
     disable() {
-        this._destroy_inactive_indicator();
+        // this._destroy_inactive_indicator();
         this._destroy_active_indicator();
 
         this._settings = null;

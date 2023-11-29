@@ -1,1 +1,13 @@
 /* Add your custom extension styling here */
+
+
+/*
+** <a target="_blank" href="https://icons8.com/icon/wyYgTmRUUf7C/lama">lama</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+*/
+.ollama-tray-llama-idle {
+    background-image: url("icons/llama.png");
+    background-size: 20px;
+    height: 20px;
+    width: 20px;
+    color: white;
+}
