@@ -7,8 +7,8 @@ all: build install
 
 build:
 	rm -f $(BUNDLE_PATH) ; \
-	cd $(EXTENSION_DIR) ; \
 	rm -f $(EXTENSION_DIR)/schemas/*.compiled ;\
+	cd $(EXTENSION_DIR) ; \
 	glib-compile-schemas schemas/ ;\
 	gnome-extensions pack --force \
 	                      --extra-source=icons/ \
@@ -27,3 +27,4 @@ run:
 
 clean:
 	@rm -fv $(BUNDLE_PATH)
+	@rm -fv $(EXTENSION_DIR)/schemas/*.compiled
