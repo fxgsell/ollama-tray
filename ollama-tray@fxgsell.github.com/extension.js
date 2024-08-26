@@ -38,8 +38,6 @@ Low:
 
 export default class OllamaTrayExtension extends Extension {
     enable() {
-        this._settings = this.getSettings('org.gnome.shell.extensions.ollama-tray');
-
         this._settings = this.getSettings();
 
         const list_models_url = `http://${  this._settings.get_string('url') }/api/tags`
@@ -47,6 +45,7 @@ export default class OllamaTrayExtension extends Extension {
         let httpSession = new Soup.Session();
         let message = Soup.Message.new('GET', list_models_url);
         let res;
+        let models = [];
 
         this._active_indicator = new PanelMenu.Button(0.0, this.metadata.name, false);
 
@@ -58,12 +57,12 @@ export default class OllamaTrayExtension extends Extension {
         
         try {
             res = httpSession.send_and_read(message, null);
+            let utf8decoder = new TextDecoder(); // default 'utf-8' or 'utf8'
 
-            let raw_data = res.get_data()
-            let models = JSON.parse(imports.byteArray.toString(raw_data))['models'];
+            let raw_data = utf8decoder.decode(res.get_data())
+            models = JSON.parse(raw_data)['models'];
 
-
-            
+                
             for (let i in models) {
                 let m = models[i];
                 console.log("Found model: " + m.name);
@@ -89,7 +88,7 @@ export default class OllamaTrayExtension extends Extension {
                         );
                         console.log("Ran process: " + proc);
                     } catch (e) {
-                        console.log(e);
+                        console.error(e);
                     }
 
                 });
@@ -97,7 +96,7 @@ export default class OllamaTrayExtension extends Extension {
                 this._active_indicator.menu.addMenuItem(item);
             }
         } catch(err) {
-            console.log("Ollama serve is not accessible: " + res);
+            console.log("Ollama serve is not accessible: " + err);
 
             let item = new PopupMenu.PopupMenuItem(_("Start Ollama serve"));
             item.connect('activate', () => {
@@ -109,7 +108,7 @@ export default class OllamaTrayExtension extends Extension {
                         Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
                     );
                 } catch (e) {
-                    console.log(e);
+                    console.error(e);
                 }
             });
             this._active_indicator.menu.addMenuItem(item);
