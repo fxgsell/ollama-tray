@@ -1,5 +1,5 @@
 {
-  "name": "Ollama Indicator",
+  "name": "Ollama Tray",
   "description": "An indicator that let you run models with Ollama.",
   "uuid": "ollama-tray@fxgsell.github.com",
   "shell-version": [

@@ -16,22 +16,16 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-// import GLib from 'gi://GLib';
 import Soup from 'gi://Soup';
-import GObject from 'gi://GObject';
 import St from 'gi://St';
 import Gio from 'gi://Gio';
 
-import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import System from 'system';
 
 /* TODO
-
-
 Low:
 - Change Icon based on ollama status
 - Background refresh status
@@ -40,33 +34,11 @@ Low:
 
 */
 
-export default class IndicatorExtension extends Extension {
-    refresh_models() {
-
-    }
-
+export default class OllamaTrayExtension extends Extension {
     enable() {
         this._settings = this.getSettings('org.gnome.shell.extensions.ollama-tray');
 
-        // this._indicator.menu.addAction(_('Preferences'),
-        // () => this.openPreferences());
-
-        // Create a new GSettings object, and bind the "show-indicator"
-        // setting to the "visible" property.
         this._settings = this.getSettings();
-        // this._settings.bind('url', this._indicator, 'visible', Gio.SettingsBindFlags.DEFAULT);
-
-        // Watch for changes to a specific setting
-        //this._settings.connect('changed::show-indicator', (settings, key) => {
-        //    console.debug(`${key} = ${settings.get_value(key).print(true)}`);
-        //});
-
-
-        // let item = new PopupMenu.PopupMenuItem(_('Show Notification'));
-        // item.connect('activate', () => {
-        //     Main.notify(_('Whatʼs up, folks?'));
-        // });
-        // this.menu.addMenuItem(item);
 
         const list_models_url = `http://${  this._settings.get_string('url') }/api/tags`
        
@@ -97,7 +69,6 @@ export default class IndicatorExtension extends Extension {
                 let item = new PopupMenu.PopupMenuItem(_(m.name));
                 item.connect('activate', () => {
                     try {
-                        "gnome-terminal -- bash -c 'ollama run mistral:7b'"
                         let ollama_cmd = this._settings.get_string('command').split(" ");
                         ollama_cmd.push('run');
                         ollama_cmd.push(m.name);
@@ -131,7 +102,7 @@ export default class IndicatorExtension extends Extension {
                 try {
                     let cmd = this._settings.get_string('command').split(" ");
                     cmd.push('serve');
-                    const proc = Gio.Subprocess.new(
+                    Gio.Subprocess.new(
                         cmd,
                         Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
                     );
@@ -159,7 +130,6 @@ export default class IndicatorExtension extends Extension {
     }
 
     disable() {
-        // this._destroy_inactive_indicator();
         this._destroy_active_indicator();
 
         this._settings = null;
