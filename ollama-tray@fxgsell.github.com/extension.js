@@ -20,6 +20,8 @@ import Soup from 'gi://Soup';
 import St from 'gi://St';
 import Gio from 'gi://Gio';
 
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
