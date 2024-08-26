@@ -97,13 +97,24 @@ export default class IndicatorExtension extends Extension {
                 let item = new PopupMenu.PopupMenuItem(_(m.name));
                 item.connect('activate', () => {
                     try {
-                        let cmd = this._settings.get_string('command').split(" ");
-                        cmd.push('run');
-                        cmd.push(m.name);
+                        "gnome-terminal -- bash -c 'ollama run mistral:7b'"
+                        let ollama_cmd = this._settings.get_string('command').split(" ");
+                        ollama_cmd.push('run');
+                        ollama_cmd.push(m.name);
+
+                        let cmd = [
+                            'gnome-terminal',
+                            '--',
+                            'bash',
+                            '-c',
+                            ollama_cmd.join(' ')
+                        ]
+                        log("Running process: " + cmd);
                         const proc = Gio.Subprocess.new(
                             cmd,
                             Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
                         );
+                        log("Ran process: " + proc);
                     } catch (e) {
                         logError(e);
                     }
