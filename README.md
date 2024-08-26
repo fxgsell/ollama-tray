@@ -1,8 +1,14 @@
 # Ollama Tray
 
-An extension to use ollama from gnome-shell.
+An extension to start llms with ollama directly from gnome-shell.
 
-### Configuration
+## Main menu
+![Screenshot of the main menu](/screenshots/tray.png?raw=true "Tray")
 
-- *Ollama URL* to list the models alredy installed
+## Settings
+![Screenshot of the settings screen](/screenshots/settings.png?raw=true "Settings")
+
+### Configuration Options
+
+- *Ollama URL* to list the models already installed
 - *Ollama Command* used to run a model or start the server
