@@ -87,7 +87,7 @@ export default class OllamaTrayExtension extends Extension {
                         );
                         console.log("Ran process: " + proc);
                     } catch (e) {
-                        logError(e);
+                        console.log(e);
                     }
 
                 });
@@ -107,7 +107,7 @@ export default class OllamaTrayExtension extends Extension {
                         Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
                     );
                 } catch (e) {
-                    logError(e);
+                    console.log(e);
                 }
             });
             this._active_indicator.menu.addMenuItem(item);
