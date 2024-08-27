@@ -65,7 +65,7 @@ export default class OllamaTrayExtension extends Extension {
                 
             for (let i in models) {
                 let m = models[i];
-                console.log("Found model: " + m.name);
+                console.log("Found ollama model: " + m.name);
 
                 let item = new PopupMenu.PopupMenuItem(_(m.name));
                 item.connect('activate', () => {
@@ -86,7 +86,6 @@ export default class OllamaTrayExtension extends Extension {
                             cmd,
                             Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
                         );
-                        console.log("Ran process: " + proc);
                     } catch (e) {
                         console.error(e);
                     }
@@ -96,7 +95,7 @@ export default class OllamaTrayExtension extends Extension {
                 this._active_indicator.menu.addMenuItem(item);
             }
         } catch(err) {
-            console.log("Ollama serve is not accessible: " + err);
+            console.log("Ollama endpoint is not accessible: " + err);
 
             let item = new PopupMenu.PopupMenuItem(_("Start Ollama serve"));
             item.connect('activate', () => {
