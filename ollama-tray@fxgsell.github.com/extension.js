@@ -51,8 +51,8 @@ export default class OllamaTrayExtension extends Extension {
         this._active_indicator = new PanelMenu.Button(0.0, this.metadata.name, false);
 
         Main.panel.addToStatusArea(this.uuid, this._active_indicator);
-        let icon = new St.Icon({ 
-            style_class: 'ollama-tray-llama-idle', 
+        let icon = new St.Icon({
+            style_class: 'ollama-tray-llama-idle',
         });
         this._active_indicator.add_child(icon);
 
@@ -109,18 +109,23 @@ export default class OllamaTrayExtension extends Extension {
 
     _runModel(name) {
         let ollama_cmd = this._ollamaCommand();
-        ollama_cmd.push('run');
-        ollama_cmd.push(name);
+        ollama_cmd.push('run', name);
 
-        let cmd = [
-            'gnome-terminal',
-            '--',
-            'bash',
-            '-c',
-            ollama_cmd.join(' ')
-        ];
-        console.log("Running process: " + cmd);
-        Gio.Subprocess.new(cmd, Gio.SubprocessFlags.NONE);
+        let template = this._settings.get_string('run-command');
+        if (!template.includes('OLLAMA_CMD')) {
+            template = this._settings.get_default_value('run-command').unpack();
+        }
+
+        let ollama_cmd_escaped = ollama_cmd.map(arg => GLib.shell_quote(arg)).join(' ');
+        let command_line = template.replace('OLLAMA_CMD', ollama_cmd_escaped);
+        console.log("Running command line: " + command_line);
+
+        try {
+            let [, argv] = GLib.shell_parse_argv(command_line);
+            Gio.Subprocess.new(argv, Gio.SubprocessFlags.NONE);
+        } catch (e) {
+            console.error("Failed to parse command line: " + e);
+        }
     }
 
     _start() {
