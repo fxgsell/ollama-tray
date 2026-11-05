@@ -23,7 +23,7 @@ enable:
 	dbus-run-session -- gnome-extensions enable tailscale@joaophi.github.com
 
 run:
-	dbus-run-session -- gnome-shell --nested --wayland
+	dbus-run-session -- gnome-shell --devkit
 
 clean:
 	@rm -fv $(BUNDLE_PATH)
