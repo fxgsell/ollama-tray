@@ -7,5 +7,8 @@
     <key name="command" type="s">
       <default>"ollama"</default>
     </key>
+    <key name="run-command" type="s">
+      <default>'gnome-terminal -- bash -c "OLLAMA_CMD"'</default>
+    </key>
   </schema>
 </schemalist>

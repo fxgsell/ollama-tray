@@ -20,27 +20,29 @@ export default class OllamaPreferences extends ExtensionPreferences {
         });
         page.add(group);
 
-        // Create a new preferences row
+        // URL row
         const url_row = new Adw.EntryRow({
             title: _('ollama url'),
             text: window._settings.get_string('url'),
-            
-            // subtitle: _('Whether to show the panel indicator'),
         });
         group.add(url_row);
-        window._settings.bind('url', url_row, 'active',  Gio.SettingsBindFlags.DEFAULT);
+        window._settings.bind('url', url_row, 'text', Gio.SettingsBindFlags.DEFAULT);
 
-
-        // Create a new preferences row
+        // Base command row
         const bin_row = new Adw.EntryRow({
             title: _('ollama command'),
             text: window._settings.get_string('command'),
-            // subtitle: _('Whether to show the panel indicator'),
         });
         group.add(bin_row);
-        window._settings.bind('command', bin_row, 'active',  Gio.SettingsBindFlags.DEFAULT);
+        window._settings.bind('command', bin_row, 'text', Gio.SettingsBindFlags.DEFAULT);
 
-        // Create a settings object and bind the row to the `show-indicator` key
-        // window._settings = this.getSettings();
+        // Run command template row
+        const run_cmd_row = new Adw.EntryRow({
+            title: _('run command template'),
+            text: window._settings.get_string('run-command'),
+        });
+        run_cmd_row.subtitle = _('Use OLLAMA_CMD as a placeholder. Example: kgx -- OLLAMA_CMD');
+        group.add(run_cmd_row);
+        window._settings.bind('run-command', run_cmd_row, 'text', Gio.SettingsBindFlags.DEFAULT);
     }
 }
